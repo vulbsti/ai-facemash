@@ -95,7 +95,7 @@ exports.handler = async function(event, context) {
       
       // Use Promise.race to set a client-side timeout
       const openaiPromise = openai.chat.completions.create({
-        model: "gpt-4-vision-preview", // Using a vision model that's more optimized
+        model: "chatgpt-4o-latest", // Using the latest model with vision capabilities
         messages: [
           {
             role: "system",

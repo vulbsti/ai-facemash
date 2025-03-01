@@ -82,7 +82,7 @@ exports.handler = async function(event, context) {
     const promptsByType = rateSelfPrompts[ratingType] || rateSelfPrompts.rate;
     const prompt = (gender && promptsByType[gender]) ? promptsByType[gender] : promptsByType.male;
 
-    console.log("Using model: gpt-4-vision-preview");
+    console.log("Using model: chatgpt-4o-latest");
 
     try {
       // Set a lower max_tokens to reduce processing time
@@ -90,7 +90,7 @@ exports.handler = async function(event, context) {
       
       // Use Promise.race to set a client-side timeout
       const openaiPromise = openai.chat.completions.create({
-        model: "gpt-4-vision-preview", // Using a vision model that's more optimized
+        model: "chatgpt-4o-latest", // Using the latest model with vision capabilities
         messages: [
           {
             role: "system",
