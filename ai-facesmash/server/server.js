@@ -9,7 +9,7 @@ const apiRoutes = require('./api-routes');
 
 // Load environment variables
 dotenv.config();
-
+process.env.VERCEL_MAX_FUNCTION_DURATION = '60';
 // Debug: Log environment variables
 console.log("Environment variables loaded:");
 console.log("PORT:", process.env.PORT);
