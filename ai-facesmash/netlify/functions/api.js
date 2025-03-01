@@ -156,9 +156,13 @@ app.post('/rate-self', upload.single('image'), async (req, res) => {
     const gender = req.body.gender || 'male';
     
     const result = await processRateSelf(req.file.buffer, ratingType, gender);
-    res.json({ result });
+    
+    // Ensure content type is set to application/json
+    res.setHeader('Content-Type', 'application/json');
+    res.status(200).json({ result });
   } catch (error) {
     console.error('Error processing image:', error);
+    res.setHeader('Content-Type', 'application/json');
     res.status(500).json({ message: 'An error occurred while processing your image' });
   }
 });
@@ -182,9 +186,13 @@ app.post('/compare-friends', upload.fields([
     const imageBuffers = Object.values(req.files).map(fileArr => fileArr[0].buffer);
     
     const result = await processCompareFriends(imageBuffers, ratingType, gender);
-    res.json({ result });
+    
+    // Ensure content type is set to application/json
+    res.setHeader('Content-Type', 'application/json');
+    res.status(200).json({ result });
   } catch (error) {
     console.error('Error processing images:', error);
+    res.setHeader('Content-Type', 'application/json');
     res.status(500).json({ message: 'An error occurred while processing your images' });
   }
 });

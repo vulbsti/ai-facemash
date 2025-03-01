@@ -63,23 +63,50 @@ function showError(message) {
 // Handle form submission with file uploads
 async function submitFormData(endpoint, formData, responseElement) {
   try {
+    console.log("Sending request to: ", `/.netlify/functions/api/${endpoint}`);
+    
     const response = await fetch(`/.netlify/functions/api/${endpoint}`, {
       method: 'POST',
       body: formData
     });
 
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.message || 'An error occurred');
+    console.log("Response status:", response.status);
+    
+    // Debug response headers
+    for (let [key, value] of response.headers.entries()) {
+      console.log(`${key}: ${value}`);
     }
 
-    // With Netlify functions, we get a JSON response instead of a stream
-    const responseData = await response.json();
-    
-    // Create a mock response with the result text
-    const mockResponse = new Response(responseData.result);
-    return mockResponse;
+    if (!response.ok) {
+      let errorMessage = 'An error occurred';
+      try {
+        const contentType = response.headers.get('content-type');
+        if (contentType && contentType.includes('application/json')) {
+          const errorData = await response.json();
+          errorMessage = errorData.message || errorMessage;
+        } else {
+          errorMessage = await response.text();
+        }
+      } catch (e) {
+        console.error("Error parsing error response:", e);
+      }
+      throw new Error(errorMessage);
+    }
+
+    try {
+      // With Netlify functions, we get a JSON response instead of a stream
+      const responseData = await response.json();
+      console.log("Response data received:", responseData);
+      
+      // Create a mock response with the result text
+      const mockResponse = new Response(responseData.result);
+      return mockResponse;
+    } catch (e) {
+      console.error("Error parsing JSON response:", e);
+      throw new Error("Failed to parse response from server");
+    }
   } catch (error) {
+    console.error("Request error:", error);
     showError(error.message);
     throw error;
   }
