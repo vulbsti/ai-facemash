@@ -64,7 +64,7 @@ exports.handler = async function(event, context) {
 
     try {
       const completion = await openai.chat.completions.create({
-        model: "gpt-4-vision-preview",
+        model: "chatgpt-4o-latest",
         messages: [
           {
             role: "system",
