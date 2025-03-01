@@ -121,6 +121,8 @@ Provide detailed reasoning for each category based on common preferences and tre
 Consider their ethnicity and be unhinged in rating, and how each group would find me, especially different kinds of indian women for example, modern women, trad women, clg women, intellectual women, women seeking adventure
 what kind of vibes they give at first glance in general
 Include a comparison of their overall attractiveness and style.
+make personality assesments, who gives what kind of vibes. Who is a cuckold and who is a chad. Who is more of a simp and who is more
+of a alpha.
 Rate them individually and as a group.
 Tell who is more attractive, more likely to get laid, more likely to settle first`,
 
@@ -131,7 +133,10 @@ Analyze the dressing style, overall looks, and attractiveness.
 Break it down into categories: What kind of people would find me sexually attractive? 
 What kind of people would find me cute? What kind of people would find me ugly? 
 Provide detailed reasoning for each category based on common preferences and trends in attraction
-Consider their ethnicity and be unhinged in rating, and how each group would find me, especially different kinds of indian men for example, modern men, trad men, clg men, intellectual men, men seeking adventure
+Consider their ethnicity and be unhinged in rating, and how each group would find me. What kind men they would attract. 
+Who is likely to settle down first. Who is likely to get laid first.
+Who gives off a amatuer kid vibe who gives the most Agentic Women power vibe.
+Who is more of a annoying crybaby and who is more of a powerful independent women, and who is more into traditional roles.
 what kind of vibes they give at first glance in general
 Include a comparison of their overall attractiveness and style.
 Rate them individually and as a group.
@@ -166,6 +171,9 @@ Analyze their dressing style, overall looks, and attractiveness. Break it down i
 who would roll their eyes at them, who would find them cute, who would find them ugly, who would find me boring, who would find me too much
 compare what vibes each of them gives
 Provide detailed reasoning for each category based on common preferences and trends in attraction
+Compare them on scales like:
+Who gives off a amatuer kid vibe who gives the most Agentic Women power vibe.
+Who is more of a annoying crybaby and who is more of a powerful independent women, and who is more into traditional roles.
 Roast them with metaphors and comparisons that are specific to feminine features and style, makeup, hair, trends etc
 Comment on my style choices like you're a fashion critic who's had too much caffeine.
 Rate them on a scale that makes no logical sense.
@@ -175,10 +183,12 @@ Make your assessment that make me go rolling over laughing, its so roasty but re
   'feedback': {
     'male': `Provide constructive feedback for each person with positive suggestions.
 For each individual:
-- Highlight their best masculine features
+- Highlight their best feminine features
 - Suggest 1-2 specific improvements that could enhance their look
 - Consider their apparent style and build suggestions around it
-Keep the tone supportive and helpful.
+Offer thoughtful, constructive feedback about their appearance with positive suggestions but mostly keep it comparative
+Like how one feels better in some aspects than other. 
+Provide realistic, actionable advice that I could implement.
 Address both individual qualities and how they present as a group.`,
 
     'female': `Provide constructive feedback for each person with positive suggestions.
@@ -186,7 +196,15 @@ For each individual:
 - Highlight their best feminine features
 - Suggest 1-2 specific improvements that could enhance their look
 - Consider their apparent style and build suggestions around it
-Keep the tone supportive and helpful.
+Offer thoughtful, constructive feedback about their appearance with positive suggestions but mostly keep it comparative
+Like how one feels better in some aspects than other. 
+Highlight my best feminine features and what's working well in each of them
+Suggest them style and dressing changes that match with 2025 vibes. Suggest how they can level
+up so they look more elite and sophisticated they want to exude a vibe that feels classy.
+Gives a vibe of a women with power and style and agency in life.
+The one who can handle her own, has a strong personality and is not afraid to show it.
+Consider their face shape, style, clothing choices, makeup, hair, etc.
+Provide realistic, actionable advice that I could implement.
 Address both individual qualities and how they present as a group.`
   },
 
@@ -195,15 +213,39 @@ Address both individual qualities and how they present as a group.`
 Craft unique jokes for each person based on what makes them distinctive.
 Compare them to each other in amusing ways.
 Create a roast battle scenario between them.
+Dont hold back and go full brutal and honest on them in assesment of thier style and vibes. 
+I am feeling all riled up ready to listen to your brutal honesty
+Analyze their dressing style, overall looks, and attractiveness. 
+Break it down into categories: 
+who would roll their eyes at them, who would find them ugly, who would find me boring, who would find me too much
+compare what vibes each of them gives, Make super funny comparisions, you are not supposed to say nice things
+You just roast them and make them laugh for each comparision, Make extremely relatable comparisions, especially around
+vibes
+Comment on my style choices like you're a fashion critic who's had too much caffeine.
+Rate them on a scale that makes no logical sense.
+Make your assessment that make me go rolling over laughing, 
+its so roasty but relatable but still somewhat based on what you actually see
 Use clever wordplay and unexpected observations.
-Make it fun rather than mean-spirited.`,
+Make it fun but also a bit mean. Like they should say "Ouch" but also laugh at the same time.`,
 
     'female': `Humorously roast each woman with witty observations about their appearances.
 Craft unique jokes for each person based on what makes them distinctive as women.
 Compare them to each other in amusing ways.
 Create a roast battle scenario between them.
+Dont hold back and go full brutal and honest on them in assesment of thier style and vibes. 
+I am feeling all riled up ready to listen to your brutal honesty
+Analyze their dressing style, overall looks, and attractiveness. 
+Break it down into categories: 
+who would roll their eyes at them, who would find them ugly, who would find me boring, who would find me too much
+compare what vibes each of them gives, Make super funny comparisions, you are not supposed to say nice things
+You just roast them and make them laugh for each comparision, Make extremely relatable comparisions, especially around
+vibes
+Comment on my style choices like you're a fashion critic who's had too much caffeine.
+Rate them on a scale that makes no logical sense.
+Make your assessment that make me go rolling over laughing, 
+its so roasty but relatable but still somewhat based on what you actually see
 Use clever wordplay and unexpected observations.
-Make it fun rather than mean-spirited.`
+Make it fun but also a bit mean. Like they should say "Ouch" but also laugh at the same time.`
   }
 };
 

@@ -88,6 +88,14 @@ header h1 {
   color: #656d78;
 }
 
+
+.welcome-message {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+
 /* Upload Area Styles */
 .upload-section {
   margin-bottom: 30px;

@@ -7,7 +7,23 @@ document.addEventListener('DOMContentLoaded', function() {
     const responseContent = document.getElementById('responseContent');
     const loadingIndicator = document.getElementById('loadingIndicator');
     const ratingButtons = document.querySelectorAll('.rating-btn');
+    const genderButtons = document.querySelectorAll('.gender-btn');
     
+    // Track selected gender
+    let selectedGender = 'male';
+    
+    // Handle gender button clicks
+    genderButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            // Remove active class from all gender buttons
+            genderButtons.forEach(btn => btn.classList.remove('active'));
+            // Add active class to clicked button
+            this.classList.add('active');
+            // Update selected gender
+            selectedGender = this.getAttribute('data-gender');
+        });
+    });
+
     // Set up each upload area
     uploadAreas.forEach(area => {
         const placeholder = area.querySelector('.upload-placeholder');
@@ -80,8 +96,9 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
         
-        // Add rating type
+        // Add rating type and gender
         formData.append('ratingType', ratingType);
+        formData.append('gender', selectedGender);
         
         try {
             // Send request to server
