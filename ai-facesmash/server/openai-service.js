@@ -57,7 +57,7 @@ async function processRateSelfBuffer(imageBuffer, mimetype, ratingType, gender, 
           ]
         }
       ],
-      max_tokens: 4000,
+      max_tokens: 8000,
       stream: true
     });
     
@@ -117,7 +117,7 @@ async function processCompareFriendsBuffers(imageBuffers, ratingType, gender, re
           content: content
         }
       ],
-      max_tokens: 4000,
+      max_tokens: 8000,
       stream: true
     });
     

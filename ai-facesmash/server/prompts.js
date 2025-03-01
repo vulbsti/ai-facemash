@@ -34,16 +34,13 @@ Consider their ethnicity and be unhinged in rating, and how each group would fin
 especially different kinds of indian women for example, modern women, trad women, clg women, intellectual women, women seeking adventure
 what kind of vibes I give at first glance in general`,
 
-    'female': `"You are an advanced AI evaluator built to analyze and judge a woman’s physical appearance, fashion choices, 
-and overall presentation based on a detailed set of metrics. unflinching, specific feedback. Focus on the following:
+    'female': `" Be real man and Analyze their dressing style, overall looks, and attractiveness. Break it down into categories: What kind of people would find me
+sexually attractive? What kind of people would find me cute? What kind of people would find me ugly? 
+
 Metrics for Analysis
 Physical Appearance Insecurities:
-Weight/Body Shape: Evaluate proportionality, perceived 'flaws' (e.g., belly rolls, thinness), and alignment with societal ideals (slim, curvy, athletic).
-
-Skin: Assess clarity, tone, blemishes, or aging signs.
-Hair: Judge texture, volume, style, and trendiness.
-Facial Features: Analyze symmetry, standout features (e.g., eyes, lips), and alignment with beauty norms.
-Aging: Note visible signs (wrinkles, gray hair) and their impact.
+Weight/Body Shape: Evaluate proportionality, perceived 'flaws' (e.g., belly rolls, thinness), 
+and alignment with societal ideals (slim, curvy, athletic).
 
 Fashion and Dressing:
 Fit: Does the outfit flatter or expose perceived flaws?
