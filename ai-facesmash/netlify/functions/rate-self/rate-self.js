@@ -47,42 +47,64 @@ exports.handler = async function(event, context) {
     console.log(`Processing rate-self: ratingType=${ratingType}, gender=${gender}`);
     
     // Process the image
+    console.log("Image file metadata:", {
+      filename: imageFile.filename,
+      mimeType: imageFile.mimetype,
+      bufferLength: imageFile.buffer.length
+    });
+    
+    const mimeType = imageFile.mimetype || 'image/jpeg';
     const base64Image = imageFile.buffer.toString('base64');
     
     // Get gender-specific prompt or fallback to default (male)
     const promptsByType = rateSelfPrompts[ratingType] || rateSelfPrompts.rate;
     const prompt = (gender && promptsByType[gender]) ? promptsByType[gender] : promptsByType.male;
 
-    const completion = await openai.chat.completions.create({
-      model: "gpt-4-vision-preview",
-      messages: [
-        {
-          role: "system",
-          content: systemPrompt
-        },
-        {
-          role: "user",
-          content: [
-            { type: "text", text: prompt },
-            {
-              type: "image_url",
-              image_url: {
-                url: `data:image/jpeg;base64,${base64Image}`
-              }
-            }
-          ]
-        }
-      ],
-      max_tokens: 4000
-    });
+    console.log("Using model: gpt-4-vision-preview");
 
-    const result = completion.choices[0].message.content;
-    
-    return {
-      statusCode: 200,
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ result })
-    };
+    try {
+      const completion = await openai.chat.completions.create({
+        model: "gpt-4-vision-preview",
+        messages: [
+          {
+            role: "system",
+            content: systemPrompt
+          },
+          {
+            role: "user",
+            content: [
+              { type: "text", text: prompt },
+              {
+                type: "image_url",
+                image_url: {
+                  url: `data:${mimeType};base64,${base64Image}`
+                }
+              }
+            ]
+          }
+        ],
+        max_tokens: 4000
+      });
+
+      const result = completion.choices[0].message.content;
+      console.log("Got successful result from OpenAI");
+      
+      return {
+        statusCode: 200,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ result })
+      };
+    } catch (apiError) {
+      console.error("OpenAI API error:", apiError);
+      return {
+        statusCode: 500,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          message: 'OpenAI API error: ' + (apiError.message || 'Unknown error'),
+          error: apiError.toString()
+        })
+      };
+    }
   } catch (error) {
     console.error('Error processing image:', error);
     return {
@@ -95,50 +117,160 @@ exports.handler = async function(event, context) {
 
 // Parse multipart form data
 async function parseMultipartForm(event) {
-  const busboy = require('busboy');
+  // For debugging
+  console.log("Headers:", JSON.stringify(event.headers));
+  console.log("Is Base64 Encoded:", event.isBase64Encoded);
+  console.log("Body length:", event.body ? event.body.length : 0);
   
-  return new Promise((resolve, reject) => {
-    const fields = {};
-    const files = {};
-    
-    // Create busboy parser
-    const parser = busboy({ headers: event.headers });
-    
-    // Handle form fields
-    parser.on('field', (fieldname, value) => {
-      fields[fieldname] = value;
-    });
-    
-    // Handle file uploads
-    parser.on('file', (fieldname, fileStream, fileInfo) => {
-      const chunks = [];
+  // Handle form data directly with a simpler approach
+  if (event.isBase64Encoded) {
+    try {
+      // Create a raw buffer from the base64 body
+      const rawBody = Buffer.from(event.body, 'base64');
       
-      fileStream.on('data', function(chunk) {
-        chunks.push(chunk);
+      // For multipart form data, we need to find boundaries
+      const contentType = event.headers['content-type'] || event.headers['Content-Type'];
+      
+      if (!contentType || !contentType.includes('multipart/form-data')) {
+        throw new Error('Not a multipart form submission');
+      }
+      
+      // For debugging only
+      console.log("Content type:", contentType);
+      
+      // Extract boundary
+      const boundary = contentType.split('boundary=')[1].trim();
+      console.log("Boundary:", boundary);
+      
+      // Parse the form data manually
+      const parts = extractFormParts(rawBody, boundary);
+      
+      return {
+        fields: parts.fields,
+        files: parts.files
+      };
+    } catch (error) {
+      console.error("Error parsing form data:", error);
+      throw error;
+    }
+  } else {
+    console.log("Request is not base64 encoded - using busboy");
+    
+    // Fall back to busboy if not base64 encoded
+    const busboy = require('busboy');
+    
+    return new Promise((resolve, reject) => {
+      const fields = {};
+      const files = {};
+      
+      // Create busboy parser
+      const parser = busboy({ headers: event.headers });
+      
+      // Handle form fields
+      parser.on('field', (fieldname, value) => {
+        fields[fieldname] = value;
       });
       
-      fileStream.on('end', function() {
-        const buffer = Buffer.concat(chunks);
+      // Handle file uploads
+      parser.on('file', (fieldname, fileStream, fileInfo) => {
+        const chunks = [];
         
-        files[fieldname] = {
-          buffer,
-          filename: fileInfo.filename,
-          mimetype: fileInfo.mimeType
-        };
+        fileStream.on('data', function(chunk) {
+          chunks.push(chunk);
+        });
+        
+        fileStream.on('end', function() {
+          const buffer = Buffer.concat(chunks);
+          
+          files[fieldname] = {
+            buffer,
+            filename: fileInfo.filename,
+            mimetype: fileInfo.mimeType
+          };
+        });
       });
+      
+      // Finish parsing
+      parser.on('finish', () => {
+        resolve({ fields, files });
+      });
+      
+      parser.on('error', (error) => {
+        reject(error);
+      });
+      
+      // Pass the request body to busboy
+      parser.write(Buffer.from(event.body, 'utf8'));
+      parser.end();
     });
+  }
+}
+
+// Helper function to extract form parts from multipart data
+function extractFormParts(buffer, boundary) {
+  const boundaryBuffer = Buffer.from('--' + boundary);
+  const endBoundaryBuffer = Buffer.from('--' + boundary + '--');
+  
+  const fields = {};
+  const files = {};
+  
+  // Split buffer by boundary
+  let start = 0;
+  let end = buffer.indexOf(boundaryBuffer);
+  
+  while (end !== -1) {
+    // Move start past the boundary
+    start = end + boundaryBuffer.length;
     
-    // Finish parsing
-    parser.on('finish', () => {
-      resolve({ fields, files });
-    });
+    // Find the next boundary
+    end = buffer.indexOf(boundaryBuffer, start);
+    if (end === -1) {
+      // If no more boundaries, check for end boundary
+      end = buffer.indexOf(endBoundaryBuffer, start);
+      if (end === -1) break; // No more parts
+    }
     
-    parser.on('error', (error) => {
-      reject(error);
-    });
+    // Extract part content (excluding CRLF after boundary)
+    const part = buffer.slice(start + 2, end);
     
-    // Pass the request body to busboy
-    parser.write(Buffer.from(event.body, event.isBase64Encoded ? 'base64' : 'utf8'));
-    parser.end();
-  });
+    // Parse headers and content
+    const headerEnd = part.indexOf(Buffer.from('\r\n\r\n'));
+    if (headerEnd !== -1) {
+      const headerStr = part.slice(0, headerEnd).toString();
+      const content = part.slice(headerEnd + 4);
+      
+      // Parse headers
+      const headers = {};
+      headerStr.split('\r\n').forEach(line => {
+        const [name, value] = line.split(':').map(s => s.trim());
+        if (name && value) headers[name.toLowerCase()] = value;
+      });
+      
+      // Check for Content-Disposition
+      const disposition = headers['content-disposition'];
+      if (disposition) {
+        // Extract name and filename
+        const nameMatch = disposition.match(/name="([^"]+)"/);
+        const filenameMatch = disposition.match(/filename="([^"]+)"/);
+        
+        if (nameMatch) {
+          const name = nameMatch[1];
+          
+          if (filenameMatch) {
+            // This is a file
+            files[name] = {
+              buffer: content,
+              filename: filenameMatch[1],
+              mimetype: headers['content-type'] || 'application/octet-stream'
+            };
+          } else {
+            // This is a field
+            fields[name] = content.toString().trim();
+          }
+        }
+      }
+    }
+  }
+  
+  return { fields, files };
 }
