@@ -3,11 +3,25 @@
   publish = "public"
   functions = "netlify/functions"
 
-# Redirect API calls to our serverless functions
+# Redirect all API calls to our serverless function
 [[redirects]]
   from = "/api/*"
   to = "/.netlify/functions/api/:splat"
   status = 200
+  force = true
+
+# Specifically redirecting rate-self and compare-friends endpoints
+[[redirects]]
+  from = "/api/rate-self"
+  to = "/.netlify/functions/api/rate-self"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/api/compare-friends"
+  to = "/.netlify/functions/api/compare-friends"
+  status = 200
+  force = true
 
 # For SPA routing support
 [[redirects]]

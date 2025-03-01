@@ -63,9 +63,9 @@ function showError(message) {
 // Handle form submission with file uploads
 async function submitFormData(endpoint, formData, responseElement) {
   try {
-    console.log("Sending request to: ", `/.netlify/functions/api/${endpoint}`);
+    console.log("Sending request to: ", `/.netlify/functions/${endpoint}`);
     
-    const response = await fetch(`/.netlify/functions/api/${endpoint}`, {
+    const response = await fetch(`/.netlify/functions/${endpoint}`, {
       method: 'POST',
       body: formData
     });
