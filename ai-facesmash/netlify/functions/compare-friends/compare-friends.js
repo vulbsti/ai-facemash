@@ -95,7 +95,7 @@ exports.handler = async function(event, context) {
       
       // Use Promise.race to set a client-side timeout
       const openaiPromise = openai.chat.completions.create({
-        model: "chatgpt-4o-latest", // Using the latest model with vision capabilities
+        model: "chatgpt-4o-latest", // Using a vision model that's more optimized
         messages: [
           {
             role: "system",
@@ -106,14 +106,13 @@ exports.handler = async function(event, context) {
             content: content
           }
         ],
-        max_tokens: 500, // Reduced from 4000 to speed up response
+        max_tokens: 4000, // Reduced from 4000 to speed up response
         temperature: 0.7
       });
       
-      // Increase the timeout to 25 seconds since we're using background functions
-      // that can run for much longer than the default 10s
+      // Create a timeout promise
       const timeoutPromise = new Promise((_, reject) => {
-        setTimeout(() => reject(new Error("OpenAI request timed out")), 25000); // 25-second timeout
+        setTimeout(() => reject(new Error("OpenAI request timed out")), 80000); // 80-second timeout
       });
       
       // Race between the OpenAI request and the timeout
