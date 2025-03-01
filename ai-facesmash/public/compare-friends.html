@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Compare Friends - AI Facesmash</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Compare Friends</h1>
+            <a href="index.html" class="back-btn"><i class="fas fa-arrow-left"></i> Back</a>
+        </header>
+        
+        <main>
+            <div class="upload-section multi-upload">
+                <div class="upload-area" id="uploadArea1" data-index="0">
+                    <div class="upload-placeholder">
+                        <i class="fas fa-plus"></i>
+                        <p>Upload Photo</p>
+                    </div>
+                    <img class="image-preview hidden" src="#" alt="Preview">
+                    <input type="file" class="image-upload hidden" accept="image/*">
+                </div>
+                
+                <div class="upload-area" id="uploadArea2" data-index="1">
+                    <div class="upload-placeholder">
+                        <i class="fas fa-plus"></i>
+                        <p>Upload Photo</p>
+                    </div>
+                    <img class="image-preview hidden" src="#" alt="Preview">
+                    <input type="file" class="image-upload hidden" accept="image/*">
+                </div>
+                
+                <div class="upload-area" id="uploadArea3" data-index="2">
+                    <div class="upload-placeholder">
+                        <i class="fas fa-plus"></i>
+                        <p>Upload Photo</p>
+                    </div>
+                    <img class="image-preview hidden" src="#" alt="Preview">
+                    <input type="file" class="image-upload hidden" accept="image/*">
+                </div>
+                
+                <div class="upload-area" id="uploadArea4" data-index="3">
+                    <div class="upload-placeholder">
+                        <i class="fas fa-plus"></i>
+                        <p>Upload Photo</p>
+                    </div>
+                    <img class="image-preview hidden" src="#" alt="Preview">
+                    <input type="file" class="image-upload hidden" accept="image/*">
+                </div>
+            </div>
+            
+            <div class="gender-selection">
+                <p>Select Gender:</p>
+                <div class="gender-buttons">
+                    <button class="gender-btn active" data-gender="male">Male</button>
+                    <button class="gender-btn" data-gender="female">Female</button>
+                </div>
+            </div>
+            
+            <div class="rating-options">
+                <button class="rating-btn" data-type="rate">Rate</button>
+                <button class="rating-btn" data-type="rate-unhinged">Rate-Unhinged</button>
+                <button class="rating-btn" data-type="feedback">Feedback</button>
+                <button class="rating-btn" data-type="roast">Roast-Me-Dead</button>
+            </div>
+            
+            <div class="response-container hidden" id="responseContainer">
+                <h3>AI Response</h3>
+                <div class="response-content" id="responseContent"></div>
+            </div>
+            
+            <div class="loading-indicator hidden" id="loadingIndicator">
+                <span class="loader"></span>
+                <p>Processing your images...</p>
+            </div>
+        </main>
+    </div>
+    
+    <script src="libs/marked.min.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/compare-friends.js"></script>
+</body>
+</html>
