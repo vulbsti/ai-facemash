@@ -63,7 +63,7 @@ function showError(message) {
 // Handle form submission with file uploads
 async function submitFormData(endpoint, formData, responseElement) {
   try {
-    const response = await fetch(`/api/${endpoint}`, {
+    const response = await fetch(`/.netlify/functions/api/${endpoint}`, {
       method: 'POST',
       body: formData
     });
@@ -73,7 +73,12 @@ async function submitFormData(endpoint, formData, responseElement) {
       throw new Error(errorData.message || 'An error occurred');
     }
 
-    return response;
+    // With Netlify functions, we get a JSON response instead of a stream
+    const responseData = await response.json();
+    
+    // Create a mock response with the result text
+    const mockResponse = new Response(responseData.result);
+    return mockResponse;
   } catch (error) {
     showError(error.message);
     throw error;
