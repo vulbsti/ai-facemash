@@ -8,17 +8,8 @@ const path = require('path');
 const fs = require('fs');
 const openaiService = require('./openai-service');
 
-// Configure multer for file uploads
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, path.join(__dirname, 'uploads'));
-  },
-  filename: function (req, file, cb) {
-    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-    const extension = path.extname(file.originalname);
-    cb(null, file.fieldname + '-' + uniqueSuffix + extension);
-  }
-});
+// Configure multer for file uploads (using memory storage for Vercel)
+const storage = multer.memoryStorage();
 
 // File filter to only accept images
 const fileFilter = (req, file, cb) => {
@@ -43,22 +34,16 @@ router.post('/rate-self', upload.single('image'), async (req, res) => {
     if (!req.file) {
       return res.status(400).json({ message: 'No image uploaded' });
     }
-
     const ratingType = req.body.ratingType || 'rate';
     const gender = req.body.gender || 'male';  // Default to male if not specified
-    const imagePath = req.file.path;
     
     // Set up streaming response
     res.setHeader('Content-Type', 'text/plain');
     res.setHeader('Transfer-Encoding', 'chunked');
     
-    // Call OpenAI service to process the image
-    await openaiService.processRateSelf(imagePath, ratingType, gender, res);
+    // Call OpenAI service to process the image from memory buffer
+    await openaiService.processRateSelfBuffer(req.file.buffer, req.file.mimetype, ratingType, gender, res);
     
-    // Clean up the uploaded file
-    fs.unlink(imagePath, (err) => {
-      if (err) console.error('Error deleting file:', err);
-    });
   } catch (error) {
     console.error('Error processing image:', error);
     res.status(500).json({ message: 'An error occurred while processing your image' });
@@ -76,24 +61,22 @@ router.post('/compare-friends', upload.fields([
     if (!req.files || Object.keys(req.files).length < 2) {
       return res.status(400).json({ message: 'At least two images must be uploaded' });
     }
-
     const ratingType = req.body.ratingType || 'rate';
     const gender = req.body.gender || 'male';  // Default to male if not specified
-    const imagePaths = Object.values(req.files).map(fileArr => fileArr[0].path);
+    
+    // Prepare image buffers and mimetypes
+    const imageBuffers = Object.values(req.files).map(fileArr => ({
+      buffer: fileArr[0].buffer,
+      mimetype: fileArr[0].mimetype
+    }));
     
     // Set up streaming response
     res.setHeader('Content-Type', 'text/plain');
     res.setHeader('Transfer-Encoding', 'chunked');
     
-    // Call OpenAI service to process the images
-    await openaiService.processCompareFriends(imagePaths, ratingType, gender, res);
+    // Call OpenAI service to process the images from memory buffers
+    await openaiService.processCompareFriendsBuffers(imageBuffers, ratingType, gender, res);
     
-    // Clean up the uploaded files
-    imagePaths.forEach(path => {
-      fs.unlink(path, (err) => {
-        if (err) console.error('Error deleting file:', err);
-      });
-    });
   } catch (error) {
     console.error('Error processing images:', error);
     res.status(500).json({ message: 'An error occurred while processing your images' });

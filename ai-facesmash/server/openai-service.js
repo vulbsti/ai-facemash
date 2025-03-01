@@ -5,32 +5,38 @@ const { OpenAI } = require('openai');
 const fs = require('fs');
 const { systemPrompt, rateSelfPrompts, compareFriendsPrompts } = require('./prompts');
 
-// Initialize OpenAI client with the API key directly instead of using environment variables
+// Initialize OpenAI client with API key from environment variable for better security
 const openai = new OpenAI({
-  apiKey: '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'
+  apiKey: process.env.OPENAI_API_KEY || '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'
 });
 
-// Helper function to encode image to base64
+// Helper function to encode image to base64 from file path
 function encodeImageToBase64(imagePath) {
   const imageBuffer = fs.readFileSync(imagePath);
   return imageBuffer.toString('base64');
 }
 
+// Helper function to encode buffer directly to base64
+function encodeBufferToBase64(buffer) {
+  return buffer.toString('base64');
+}
+
 /**
- * Process a single image for "Rate Self" functionality
- * @param {string} imagePath - Path to the uploaded image
+ * Process a single image buffer for "Rate Self" functionality
+ * @param {Buffer} imageBuffer - Buffer of the uploaded image
+ * @param {string} mimetype - MIME type of the uploaded image
  * @param {string} ratingType - Type of rating to request
  * @param {string} gender - Gender selection ('male' or 'female')
  * @param {object} res - Express response object for streaming
  */
-async function processRateSelf(imagePath, ratingType, gender, res) {
+async function processRateSelfBuffer(imageBuffer, mimetype, ratingType, gender, res) {
   try {
-    const base64Image = encodeImageToBase64(imagePath);
+    const base64Image = encodeBufferToBase64(imageBuffer);
     
     // Get gender-specific prompt or fallback to default (male)
     const promptsByType = rateSelfPrompts[ratingType] || rateSelfPrompts.rate;
     const prompt = (gender && promptsByType[gender]) ? promptsByType[gender] : promptsByType.male;
-
+    
     const stream = await openai.chat.completions.create({
       model: "chatgpt-4o-latest",
       messages: [
@@ -45,7 +51,7 @@ async function processRateSelf(imagePath, ratingType, gender, res) {
             {
               type: "image_url",
               image_url: {
-                url: `data:image/jpeg;base64,${base64Image}`
+                url: `data:${mimetype};base64,${base64Image}`
               }
             }
           ]
@@ -54,7 +60,7 @@ async function processRateSelf(imagePath, ratingType, gender, res) {
       max_tokens: 4000,
       stream: true
     });
-
+    
     // Stream the response back to the client
     for await (const chunk of stream) {
       const content = chunk.choices[0]?.delta?.content;
@@ -62,7 +68,6 @@ async function processRateSelf(imagePath, ratingType, gender, res) {
         res.write(content);
       }
     }
-
     res.end();
   } catch (error) {
     console.error('Error calling OpenAI:', error);
@@ -72,13 +77,13 @@ async function processRateSelf(imagePath, ratingType, gender, res) {
 }
 
 /**
- * Process multiple images for "Compare Friends" functionality
- * @param {string[]} imagePaths - Paths to the uploaded images
+ * Process multiple image buffers for "Compare Friends" functionality
+ * @param {Array} imageBuffers - Array of objects containing buffer and mimetype
  * @param {string} ratingType - Type of rating to request
  * @param {string} gender - Gender selection ('male' or 'female')
  * @param {object} res - Express response object for streaming
  */
-async function processCompareFriends(imagePaths, ratingType, gender, res) {
+async function processCompareFriendsBuffers(imageBuffers, ratingType, gender, res) {
   try {
     // Get gender-specific prompt or fallback to default (male)
     const promptsByType = compareFriendsPrompts[ratingType] || compareFriendsPrompts.rate;
@@ -90,16 +95,16 @@ async function processCompareFriends(imagePaths, ratingType, gender, res) {
     ];
     
     // Add each image to the content array
-    imagePaths.forEach(path => {
-      const base64Image = encodeImageToBase64(path);
+    imageBuffers.forEach(img => {
+      const base64Image = encodeBufferToBase64(img.buffer);
       content.push({
         type: "image_url",
         image_url: {
-          url: `data:image/jpeg;base64,${base64Image}`
+          url: `data:${img.mimetype};base64,${base64Image}`
         }
       });
     });
-
+    
     const stream = await openai.chat.completions.create({
       model: "chatgpt-4o-latest",
       messages: [
@@ -115,7 +120,7 @@ async function processCompareFriends(imagePaths, ratingType, gender, res) {
       max_tokens: 4000,
       stream: true
     });
-
+    
     // Stream the response back to the client
     for await (const chunk of stream) {
       const content = chunk.choices[0]?.delta?.content;
@@ -123,7 +128,6 @@ async function processCompareFriends(imagePaths, ratingType, gender, res) {
         res.write(content);
       }
     }
-
     res.end();
   } catch (error) {
     console.error('Error calling OpenAI:', error);
@@ -132,7 +136,39 @@ async function processCompareFriends(imagePaths, ratingType, gender, res) {
   }
 }
 
+// Keep existing methods for backward compatibility
+async function processRateSelf(imagePath, ratingType, gender, res) {
+  try {
+    const base64Image = encodeImageToBase64(imagePath);
+    const imageBuffer = fs.readFileSync(imagePath);
+    const mimetype = 'image/jpeg'; // Default assumption
+    
+    return processRateSelfBuffer(imageBuffer, mimetype, ratingType, gender, res);
+  } catch (error) {
+    console.error('Error in processRateSelf:', error);
+    res.write('Error: Unable to process your request. Please try again later.');
+    res.end();
+  }
+}
+
+async function processCompareFriends(imagePaths, ratingType, gender, res) {
+  try {
+    const imageBuffers = imagePaths.map(path => ({
+      buffer: fs.readFileSync(path),
+      mimetype: 'image/jpeg' // Default assumption
+    }));
+    
+    return processCompareFriendsBuffers(imageBuffers, ratingType, gender, res);
+  } catch (error) {
+    console.error('Error in processCompareFriends:', error);
+    res.write('Error: Unable to process your request. Please try again later.');
+    res.end();
+  }
+}
+
 module.exports = {
   processRateSelf,
-  processCompareFriends
+  processCompareFriends,
+  processRateSelfBuffer,
+  processCompareFriendsBuffers
 };
