@@ -99,8 +99,9 @@ slangs and roast me with them. Make it sharp and extremely creative.
 `,
 
     'female': `Man be real and unhinged 
-Dont hold back and go full brutal and honest on me in rating. I am feeling all riled up ready to listen to your brutal honesty
-I am all down to get roasted. I want to hear the most brutal roast you can come up with based on my dressing style, and looks, roast me with metaphors that 
+Dont hold back and go full brutal and honest on me in analysing me. I am feeling all riled up ready to listen to your brutal honesty
+I am all down to get roasted and in total mood for some crazy relatable roasts that are deeply honest about me and my vibe but also super roasty that I fall laughing. I want to hear the most brutal roast you can come up with based 
+on my dressing style, and looks, roast me with metaphors that 
 are specific to feminine features and style, that undermine my feminity and also make me laugh, 
 compare me to some of the most unattractive looking people you can think of with weird features and make me laugh
 They should be so funny that even the dead people start laughing. It should match the whole genz slang when it comes to roasting. You can use all the modern
@@ -113,9 +114,10 @@ const compareFriendsPrompts = {
   'rate': {
     'male': `Man be real and unhinged 
 Dont hold back and go full brutal and honest on me in rating 
-Compare these people
+Compare these people and answer in a table format, 
+Your vibes should be that of a fashion critic who is ready to judge who is better and who is worse
 Analyze the dressing style, overall looks, and attractiveness. 
-Break it down into categories: What kind of people would find me sexually attractive? 
+Break it down into categories but compare them metaphorically and create a scale that makes no sense: What kind of people would find me sexually attractive? 
 What kind of people would find me cute? What kind of people would find me ugly? 
 Provide detailed reasoning for each category based on common preferences and trends in attraction
 Consider their ethnicity and be unhinged in rating, and how each group would find me, especially different kinds of indian women for example, modern women, trad women, clg women, intellectual women, women seeking adventure
@@ -128,7 +130,9 @@ Tell who is more attractive, more likely to get laid, more likely to settle firs
 
     'female': `Woman be real and unhinged 
 Dont hold back and go full brutal and honest on me in rating 
-Compare these people
+Your vibes should be that of a fashion critic who is ready to judge who is better and who is worse
+Compare these people and answer in a table format with absurd scenarios and metrics like who is most likely to get married first, 
+who is most likely to get laid first
 Analyze the dressing style, overall looks, and attractiveness. 
 Break it down into categories: What kind of people would find me sexually attractive? 
 What kind of people would find me cute? What kind of people would find me ugly? 

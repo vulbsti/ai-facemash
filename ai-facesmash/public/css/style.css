@@ -27,27 +27,55 @@ header {
   text-align: center;
   margin-bottom: 40px;
   position: relative;
+  padding: 20px;
+  min-height: 80px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
 header h1 {
   color: #2e3a59;
-  margin-bottom: 10px;
+  margin: 0;
   font-size: 2.5rem;
+  line-height: 1.2;
 }
 
-.back-btn {
+.back-btn, .home-btn {
   position: absolute;
-  left: 0;
-  top: 10px;
+  top: 50%;
+  transform: translateY(-50%);
   text-decoration: none;
   color: #506690;
   font-weight: 600;
   display: flex;
   align-items: center;
+  padding: 8px 16px;
+  border-radius: 20px;
+  transition: all 0.2s;
+  background-color: #fff;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  z-index: 1;
 }
 
-.back-btn i {
+.back-btn {
+  left: 20px;
+}
+
+.home-btn {
+  right: 20px;
+}
+
+.back-btn:hover, .home-btn:hover {
+  background-color: #4d61fc;
+  color: white;
+  box-shadow: 0 3px 8px rgba(77, 97, 252, 0.3);
+}
+
+.back-btn i, .home-btn i {
   margin-right: 8px;
+  font-size: 1rem;
 }
 
 /* Home Page Styles */
@@ -229,11 +257,50 @@ header h1 {
 
 /* Response Container */
 .response-container {
+  position: relative;
   background-color: #fff;
   padding: 20px;
   border-radius: 10px;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
   margin-bottom: 30px;
+}
+
+.response-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 10px;
+}
+
+.response-header h3 {
+  color: #2e3a59;
+  margin: 0;
+}
+
+.share-button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background-color: #4d61fc;
+  color: white;
+  border: none;
+  border-radius: 20px;
+  padding: 8px 16px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 600;
+  transition: all 0.2s;
+}
+
+.share-button:hover {
+  background-color: #3b4fd9;
+  transform: translateY(-2px);
+}
+
+.share-button i {
+  font-size: 1rem;
 }
 
 .response-container h3 {
@@ -317,4 +384,210 @@ footer {
   .rating-options {
     justify-content: center;
   }
+
+  header {
+    padding-top: 60px;
+    padding-bottom: 20px;
+  }
+
+  header h1 {
+    font-size: 2rem;
+    padding: 0 50px;
+  }
+
+  .back-btn, .home-btn {
+    top: 15px;
+    transform: none;
+  }
+
+  .back-btn {
+    left: 15px;
+  }
+
+  .home-btn {
+    right: 15px;
+  }
+}
+
+/* Share Button Styles */
+.share-button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background-color: #4d61fc;
+  color: white;
+  border: none;
+  border-radius: 20px;
+  padding: 8px 16px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 600;
+  transition: all 0.2s;
+}
+
+.share-button:hover {
+  background-color: #3b4fd9;
+  transform: translateY(-2px);
+}
+
+.share-button i {
+  font-size: 1rem;
+}
+
+/* Share Modal Styles */
+.share-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s;
+}
+
+.share-modal.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.share-modal-content {
+  background-color: white;
+  border-radius: 10px;
+  max-width: 90%;
+  width: 500px;
+  padding: 25px;
+  position: relative;
+  transform: translateY(-20px);
+  transition: all 0.3s;
+}
+
+.share-modal.active .share-modal-content {
+  transform: translateY(0);
+}
+
+.share-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.share-modal-title {
+  font-size: 1.5rem;
+  color: #2e3a59;
+}
+
+.share-modal-close {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: #666;
+}
+
+.share-preview {
+  max-height: 70vh; /* Updated to use viewport height */
+  overflow-y: auto;
+  border: 1px solid #eee;
+  padding: 15px;
+  margin-bottom: 20px;
+  border-radius: 10px;
+}
+
+.share-preview img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 0 auto;
+}
+
+.share-options {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.share-option {
+  display: flex;
+  padding: 12px;
+  border: 1px solid #eee;
+  border-radius: 8px;
+  align-items: center;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.share-option:hover {
+  background-color: #f9f9f9;
+}
+
+.share-option-icon {
+  width: 30px;
+  height: 30px;
+  margin-right: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.share-option-text {
+  flex-grow: 1;
+}
+
+.share-option-text h4 {
+  margin-bottom: 4px;
+  color: #2e3a59;
+}
+
+.share-option-text p {
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.instagram-icon {
+  color: #E1306C;
+}
+
+.copy-link-icon {
+  color: #4d61fc;
+}
+
+.share-success {
+  background-color: #e7f5ef;
+  color: #1db954;
+  padding: 15px;
+  border-radius: 5px;
+  text-align: center;
+  margin-top: 15px;
+  display: none;
+}
+
+.share-success p {
+  margin: 0;
+}
+
+.share-success .validity-notice {
+  font-size: 0.85rem;
+  color: #666;
+  margin-top: 5px;
+}
+
+.share-success.active {
+  display: block;
+}
+
+.validity-banner {
+  background-color: #fff3cd;
+  color: #856404;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  margin-top: 10px;
+  border: 1px solid #ffeeba;
 }

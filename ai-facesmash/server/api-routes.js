@@ -7,6 +7,8 @@ const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
 const openaiService = require('./openai-service');
+const { v4: uuidv4 } = require('uuid');
+const redis = require('./redis-config');
 
 // Configure multer for file uploads (using memory storage for Vercel)
 const storage = multer.memoryStorage();
@@ -80,6 +82,56 @@ router.post('/compare-friends', upload.fields([
   } catch (error) {
     console.error('Error processing images:', error);
     res.status(500).json({ message: 'An error occurred while processing your images' });
+  }
+});
+
+// Share content endpoint
+router.post('/share', async (req, res) => {
+  try {
+    const { content } = req.body;
+    
+    if (!content) {
+      return res.status(400).json({ message: 'Content is required' });
+    }
+    
+    // Generate unique ID
+    const shareId = uuidv4();
+    const key = `share:${shareId}`;
+    
+    // Store in Redis with 24 hour expiration
+    await redis.setex(key, 86400, content); // 24 hours TTL
+    
+    // Return share ID
+    res.json({ shareId });
+  } catch (error) {
+    console.error('Error creating share:', error);
+    res.status(500).json({ message: 'Failed to create share link' });
+  }
+});
+
+// Get shared content endpoint
+router.get('/shared/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    
+    if (!id) {
+      return res.status(400).json({ message: 'Share ID is required' });
+    }
+    
+    const key = `share:${id}`;
+    
+    // Get content from Redis
+    const content = await redis.get(key);
+    
+    if (!content) {
+      return res.status(404).json({ message: 'Shared content not found or expired' });
+    }
+    
+    // Return content
+    res.json({ content });
+  } catch (error) {
+    console.error('Error fetching shared content:', error);
+    res.status(500).json({ message: 'Failed to load shared content' });
   }
 });
 
