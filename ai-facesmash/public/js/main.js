@@ -65,14 +65,15 @@ async function submitFormData(endpoint, formData, responseElement) {
   try {
     console.log("Sending request to: ", `/.netlify/functions/${endpoint}`);
     
-    // Show temporary analyzing message
+    // Show temporary analyzing message with a more accurate time estimate
     if (responseElement) {
-      responseElement.innerHTML = `<p>Processing your image...<br>This may take up to 30 seconds.</p>`;
+      responseElement.innerHTML = `<p>Processing your image...<br>This may take up to 60 seconds.<br><small>Please be patient as AI image analysis can take time.</small></p>`;
     }
     
-    // Implement client-side timeout for fetch request
+    // Implement client-side timeout for fetch request with an increased timeout
+    // since we're using background functions that can take longer
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 60000); // 1 minute timeout
+    const timeoutId = setTimeout(() => controller.abort(), 90000); // 1.5 minute timeout
     
     const response = await fetch(`/.netlify/functions/${endpoint}`, {
       method: 'POST',

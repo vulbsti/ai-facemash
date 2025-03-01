@@ -113,9 +113,10 @@ exports.handler = async function(event, context) {
         temperature: 0.7
       });
       
-      // Create a timeout promise
+      // Increase the timeout to 25 seconds since we're using background functions
+      // that can run for much longer than the default 10s
       const timeoutPromise = new Promise((_, reject) => {
-        setTimeout(() => reject(new Error("OpenAI request timed out")), 8000); // 8-second timeout
+        setTimeout(() => reject(new Error("OpenAI request timed out")), 25000); // 25-second timeout
       });
       
       // Race between the OpenAI request and the timeout
