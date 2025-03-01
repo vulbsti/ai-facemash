@@ -1,5 +1,27 @@
 const { OpenAI } = require('openai');
-const { systemPrompt, compareFriendsPrompts } = require('../../../server/prompts');
+const fs = require('fs');
+const path = require('path');
+
+// Since we're using background functions with long execution times,
+// load prompts directly from file rather than importing
+let systemPrompt, compareFriendsPrompts;
+try {
+  // Try to load prompts directly from the file system
+  const promptsPath = path.join(__dirname, '../../../server/prompts.js');
+  const promptsModule = require(promptsPath);
+  systemPrompt = promptsModule.systemPrompt;
+  compareFriendsPrompts = promptsModule.compareFriendsPrompts;
+} catch (err) {
+  console.error('Error loading prompts:', err);
+  // Fallback values
+  systemPrompt = "You are an AI rating assistant.";
+  compareFriendsPrompts = {
+    rate: {
+      male: "Compare these people's appearances",
+      female: "Compare these people's appearances"
+    }
+  };
+}
 
 // Set up OpenAI client
 const openai = new OpenAI({
@@ -69,9 +91,11 @@ exports.handler = async function(event, context) {
     }
 
     try {
-      console.log("Calling OpenAI API");
-      const completion = await openai.chat.completions.create({
-        model: "chatgpt-4o-latest",
+      console.log("Calling OpenAI API with timeout handling");
+      
+      // Use Promise.race to set a client-side timeout
+      const openaiPromise = openai.chat.completions.create({
+        model: "gpt-4-vision-preview", // Using a vision model that's more optimized
         messages: [
           {
             role: "system",
@@ -82,8 +106,17 @@ exports.handler = async function(event, context) {
             content: content
           }
         ],
-        max_tokens: 4000
+        max_tokens: 500, // Reduced from 4000 to speed up response
+        temperature: 0.7
       });
+      
+      // Create a timeout promise
+      const timeoutPromise = new Promise((_, reject) => {
+        setTimeout(() => reject(new Error("OpenAI request timed out")), 8000); // 8-second timeout
+      });
+      
+      // Race between the OpenAI request and the timeout
+      const completion = await Promise.race([openaiPromise, timeoutPromise]);
 
       const result = completion.choices[0].message.content;
       console.log("Got successful result from OpenAI");

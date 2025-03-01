@@ -65,10 +65,23 @@ async function submitFormData(endpoint, formData, responseElement) {
   try {
     console.log("Sending request to: ", `/.netlify/functions/${endpoint}`);
     
+    // Show temporary analyzing message
+    if (responseElement) {
+      responseElement.innerHTML = `<p>Processing your image...<br>This may take up to 30 seconds.</p>`;
+    }
+    
+    // Implement client-side timeout for fetch request
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 60000); // 1 minute timeout
+    
     const response = await fetch(`/.netlify/functions/${endpoint}`, {
       method: 'POST',
-      body: formData
+      body: formData,
+      signal: controller.signal
     });
+    
+    // Clear the timeout
+    clearTimeout(timeoutId);
 
     console.log("Response status:", response.status);
     
@@ -107,7 +120,16 @@ async function submitFormData(endpoint, formData, responseElement) {
     }
   } catch (error) {
     console.error("Request error:", error);
-    showError(error.message);
+    
+    // Special handling for timeout errors
+    if (error.name === 'AbortError') {
+      showError('The request timed out. The server might be busy. Please try again later.');
+    } else if (error.message.includes('timed out')) {
+      showError('The AI service is taking too long to respond. Please try with a smaller image or try again later.');
+    } else {
+      showError(error.message);
+    }
+    
     throw error;
   }
 }

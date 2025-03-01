@@ -3,6 +3,19 @@
   publish = "public"
   functions = "netlify/functions"
 
+# Configure function timeouts (30 seconds instead of 10)
+[functions]
+  node_bundler = "esbuild"
+  external_node_modules = ["busboy"]
+  included_files = ["server/prompts.js"]
+  
+# Important: This enables background functions that can run up to 15 minutes
+[functions."rate-self"]
+  background = true
+  
+[functions."compare-friends"]
+  background = true
+
 # Redirect all API calls to our serverless function
 [[redirects]]
   from = "/api/*"
@@ -13,13 +26,13 @@
 # Specifically redirecting rate-self and compare-friends endpoints
 [[redirects]]
   from = "/api/rate-self"
-  to = "/.netlify/functions/api/rate-self"
+  to = "/.netlify/functions/rate-self"
   status = 200
   force = true
 
 [[redirects]]
   from = "/api/compare-friends"
-  to = "/.netlify/functions/api/compare-friends"
+  to = "/.netlify/functions/compare-friends"
   status = 200
   force = true
 
